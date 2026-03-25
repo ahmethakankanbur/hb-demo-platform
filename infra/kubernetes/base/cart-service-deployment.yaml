@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-service
+  namespace: hb-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart-service
+  template:
+    metadata:
+      labels:
+        app: cart-service
+    spec:
+      containers:
+        - name: cart-service
+          image: hb-demo/cart-service:local
+          ports:
+            - containerPort: 8082
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8082
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8082

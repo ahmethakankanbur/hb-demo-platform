@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hb-demo
+resources:
+  - namespace.yaml
+  - frontend-web-deployment.yaml
+  - frontend-web-service.yaml
+  - api-gateway-deployment.yaml
+  - api-gateway-service.yaml
+  - catalog-service-deployment.yaml
+  - catalog-service-service.yaml
+  - cart-service-deployment.yaml
+  - cart-service-service.yaml
+  - platform-configmap.yaml
+  - platform-secret.yaml
+  - platform-ingress.yaml

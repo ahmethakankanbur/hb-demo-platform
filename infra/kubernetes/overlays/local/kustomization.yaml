@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+
+commonLabels:
+  environment: local
+
+images:
+  - name: hb-demo/frontend-web
+    newTag: local
+  - name: hb-demo/api-gateway
+    newTag: local
+  - name: hb-demo/catalog-service
+    newTag: local
+  - name: hb-demo/cart-service
+    newTag: local

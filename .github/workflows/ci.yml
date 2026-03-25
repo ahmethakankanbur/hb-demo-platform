@@ -1,0 +1,20 @@
+name: ci
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+
+jobs:
+  placeholder-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Repository structure check
+        run: |
+          test -d services
+          test -d infra
+          test -d docs
+          test -d scripts

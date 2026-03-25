@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-web
+  namespace: hb-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-web
+  template:
+    metadata:
+      labels:
+        app: frontend-web
+    spec:
+      containers:
+        - name: frontend-web
+          image: hb-demo/frontend-web:local
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000

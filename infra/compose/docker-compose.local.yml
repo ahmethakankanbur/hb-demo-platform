@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  frontend-web:
+    image: hb-demo/frontend-web:local
+    profiles: ["placeholder"]
+
+  api-gateway:
+    image: hb-demo/api-gateway:local
+    profiles: ["placeholder"]
+
+  catalog-service:
+    image: hb-demo/catalog-service:local
+    profiles: ["placeholder"]
+
+  cart-service:
+    image: hb-demo/cart-service:local
+    profiles: ["placeholder"]
+
+  postgres:
+    image: postgres:16
+    profiles: ["placeholder"]
+
+  redis:
+    image: redis:7
+    profiles: ["placeholder"]
