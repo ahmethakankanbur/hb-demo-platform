@@ -84,7 +84,7 @@ Gerekçe: Bu altı bileşenle gerçek bir alışveriş akışı gösterilebilir.
 - [x] Monorepo iskeleti
 - [x] Mimari sınırların tanımlanması
 - [ ] Faz 1 servislerinin ilk implementasyonu
-- [ ] Dockerfile ve `docker-compose.local.yml`
+- [x] Dockerfile ve `docker-compose.local.yml`
 - [ ] Basit CI pipeline
 - [ ] Kubernetes base manifestleri
 - [ ] Overlay mantığı ile local/staging ayrımı
@@ -96,6 +96,40 @@ Gerekçe: Bu altı bileşenle gerçek bir alışveriş akışı gösterilebilir.
 - [`infra`](/home/ahmet/code/hb-demo-platform/infra/README.md): Docker, Compose, Kubernetes ve CI/CD yapıları
 - [`docs`](/home/ahmet/code/hb-demo-platform/docs/README.md): mimari notlar ve ADR'ler
 - [`scripts`](/home/ahmet/code/hb-demo-platform/scripts/README.md): geliştirme ve bootstrap scriptleri
+
+## Local Compose ile Başlatma
+
+Yerel olarak ilk çalışan akış şu iki servisten oluşur:
+
+- `catalog-service`
+- `api-gateway`
+
+Compose dosyası:
+
+- her iki servisi source üzerinden build eder
+- port eşlemesi kurar: `8080:8080` ve `8081:8081`
+- ortak network üstünde servis keşfi sağlar
+- gateway içinde `CATALOG_SERVICE_URL=http://catalog-service:8081` ayarını kullanır
+
+Başlatma:
+
+```bash
+docker compose -f infra/compose/docker-compose.local.yml up --build
+```
+
+Arka planda çalıştırma:
+
+```bash
+docker compose -f infra/compose/docker-compose.local.yml up --build -d
+```
+
+Kontrol:
+
+```bash
+curl http://localhost:8081/health
+curl http://localhost:8080/health
+curl http://localhost:8080/api/v1/catalog/products
+```
 
 ## Not
 

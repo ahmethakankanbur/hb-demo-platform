@@ -1,26 +1,61 @@
-version: "3.9"
+name: hb-demo-local
 
 services:
-  frontend-web:
-    image: hb-demo/frontend-web:local
-    profiles: ["placeholder"]
-
-  api-gateway:
-    image: hb-demo/api-gateway:local
-    profiles: ["placeholder"]
-
+  # Catalog API local container.
+  # Compose service name also becomes the DNS name on the shared network.
   catalog-service:
+    build:
+      context: ../../services/catalog-service
     image: hb-demo/catalog-service:local
-    profiles: ["placeholder"]
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8081/health')",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - hb-demo-local
 
-  cart-service:
-    image: hb-demo/cart-service:local
-    profiles: ["placeholder"]
+  # Gateway reaches catalog-service via Docker DNS:
+  # http://catalog-service:8081
+  api-gateway:
+    build:
+      context: ../../services/api-gateway
+    image: hb-demo/api-gateway:local
+    restart: unless-stopped
+    depends_on:
+      catalog-service:
+        condition: service_healthy
+    environment:
+      CATALOG_SERVICE_URL: http://catalog-service:8081
+      REQUEST_TIMEOUT_SECONDS: "5"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health')",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - hb-demo-local
 
-  postgres:
-    image: postgres:16
-    profiles: ["placeholder"]
-
-  redis:
-    image: redis:7
-    profiles: ["placeholder"]
+networks:
+  # Single bridge network is enough for local development and service discovery.
+  hb-demo-local:
+    driver: bridge

@@ -17,4 +17,37 @@ Bu klasör operasyonel katmanı taşır.
 - health probe mantığı
 - deployment ve rollout davranışı
 
-Bu klasör başlangıçta placeholder içerir; sonraki adımda gerçek manifestlerle doldurulacaktır.
+## Local Compose
+
+`infra/compose/docker-compose.local.yml` yerel geliştirme için sade bir iki servis akışı sağlar:
+
+- `catalog-service` kendi container'ında `8081` portunda çalışır
+- `api-gateway` `8080` portunda çalışır
+- iki servis aynı Docker network içindedir
+- `api-gateway`, `catalog-service` servisine `http://catalog-service:8081` adresiyle erişir
+
+Çalıştırma:
+
+```bash
+docker compose -f infra/compose/docker-compose.local.yml up --build
+```
+
+Arka planda çalıştırma:
+
+```bash
+docker compose -f infra/compose/docker-compose.local.yml up --build -d
+```
+
+Durdurma:
+
+```bash
+docker compose -f infra/compose/docker-compose.local.yml down
+```
+
+Doğrulama:
+
+```bash
+curl http://localhost:8081/health
+curl http://localhost:8080/health
+curl http://localhost:8080/api/v1/catalog/products
+```
