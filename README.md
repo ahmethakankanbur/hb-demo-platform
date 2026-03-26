@@ -1,60 +1,53 @@
 # hb-demo-platform
 
-Hepsiburada benzeri bir e-ticaret deneyimini modelleyen, öğrenme odaklı ve production-minded bir monorepo.
+Hepsiburada benzeri bir e-ticaret deneyimini modelleyen, öğrenme odakli ve production-minded bir monorepo. Repo; servis sinirlari, local development, temel CI akisi ve Kubernetes'e hazir altyapi dusuncesi uzerine kuruludur.
 
-Bu repo şu konuları birlikte çalışmak için tasarlandı:
+[![Service CI Checks](https://github.com/ahmethakankanbur/hb-demo-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/ahmethakankanbur/hb-demo-platform/actions/workflows/ci.yml)
 
-- Docker ve Docker Compose ile yerel geliştirme
-- GitHub Actions ile temel CI akışı
-- Kubernetes deployment mantığı
-- Ingress, ConfigMap, Secret, liveness ve readiness probe kullanımı
-- Monorepo düzeni, servis sınırları ve operasyonel düşünce biçimi
+## Tech Stack
 
-## Kısa Mimari Öneri
+- Python 3.12
+- Flask tabanli HTTP servisleri
+- Docker ve Docker Compose
+- GitHub Actions
+- Kubernetes ve Kustomize tabanli manifest yapisi
 
-İlk aşamada yalın ama profesyonel görünen bir mikroservis yapısı önerilir:
+## Current Services
 
-- `frontend-web`: kullanıcı arayüzü
-- `api-gateway`: istemcinin tek giriş noktası
-- `catalog-service`: ürün listeleme ve ürün detayı
-- `cart-service`: sepet işlemleri
-- `postgres`: kalıcı veri
-- `redis`: cache ve kısa süreli veri
+Su an repo icinde tanimli veya planlanmis servisler:
 
-İkinci aşamada eklenecek servisler:
-
-- `order-service`: sipariş oluşturma ve durum takibi
-- `identity-service`: kullanıcı ve basit kimlik doğrulama
-
-Bu yapı öğrenme açısından yeterince gerçekçidir, fakat gereksiz erken karmaşıklık üretmez.
-
-## Servisler ve Görevleri
-
-| Servis | Sorumluluk | Faz |
+| Service | Responsibility | Status |
 | --- | --- | --- |
-| `frontend-web` | Ürün listeleme, ürün detay, sepet akışı için web arayüzü | Faz 1 |
-| `api-gateway` | Routing, basit auth kontrolü, response aggregation | Faz 1 |
-| `catalog-service` | Ürün verisi, kategori, arama için API | Faz 1 |
-| `cart-service` | Sepete ekleme, çıkarma, sepet görüntüleme | Faz 1 |
-| `order-service` | Sipariş oluşturma, sipariş durumu | Faz 2 |
-| `identity-service` | Kullanıcı profili, login/register için temel yapı | Faz 2 |
-| `postgres` | Uygulama verisi | Faz 1 |
-| `redis` | Cache, session, geçici state | Faz 1 |
+| `frontend-web` | Web arayuzu | Planlanmis |
+| `api-gateway` | Routing, basit auth kontrolu, response aggregation | Mevcut |
+| `catalog-service` | Urun listeleme, urun detayi ve katalog API'si | Mevcut |
+| `cart-service` | Sepet islemleri | Iskelet asamasinda |
+| `order-service` | Siparis olusturma ve durum takibi | Planlanmis |
+| `identity-service` | Kullanici ve temel kimlik dogrulama yapisi | Planlanmis |
+| `postgres` | Kalici veri katmani | Mimari hedef |
+| `redis` | Cache ve kisa sureli veri | Mimari hedef |
 
-## İlk Aşamada Nereden Başlamalı?
+Bugun itibariyla local compose akisi `catalog-service` ve `api-gateway` uzerinden calisir. Bu ikili, repo icindeki ilk gercek servis etkilesimini ve CI dogrulamasini temsil eder.
 
-En doğru başlangıç seti:
+## Architecture Snapshot
 
-1. `frontend-web`
-2. `api-gateway`
-3. `catalog-service`
-4. `cart-service`
-5. `postgres`
-6. `redis`
+Ilk asamada yalniz ama profesyonel gorunen bir mikroservis yapisi hedeflenir:
 
-Gerekçe: Bu altı bileşenle gerçek bir alışveriş akışı gösterilebilir. Aynı zamanda Docker Compose, container network, environment management, health check ve CI adımlarını öğretmek için yeterlidir.
+- `frontend-web`
+- `api-gateway`
+- `catalog-service`
+- `cart-service`
+- `postgres`
+- `redis`
 
-## Monorepo Yapısı
+Ikinci asamada eklenmesi planlanan servisler:
+
+- `order-service`
+- `identity-service`
+
+Bu yapi, gereksiz erken karmasiklik uretmeden servis sinirlari, container tabanli gelistirme ve operasyonel dusunce bicimi uzerinde calismak icin yeterli bir temel saglar.
+
+## Repository Layout
 
 ```text
 .
@@ -79,64 +72,33 @@ Gerekçe: Bu altı bileşenle gerçek bir alışveriş akışı gösterilebilir.
     └── order-service/
 ```
 
-## Öğrenme Yol Haritası
-
-- [x] Monorepo iskeleti
-- [x] Mimari sınırların tanımlanması
-- [ ] Faz 1 servislerinin ilk implementasyonu
-- [x] Dockerfile ve `docker-compose.local.yml`
-- [x] Basit CI pipeline
-- [ ] Kubernetes base manifestleri
-- [ ] Overlay mantığı ile local/staging ayrımı
-- [ ] Ingress, ConfigMap, Secret ve probe kullanımı
-
-## CI Pipeline
-
-`.github/workflows/ci.yml` içindeki GitHub Actions workflow'u sadece `main` branch'i için çalışır:
-
-- `push` ile `main` güncellendiğinde tetiklenir
-- `pull_request` ile hedef branch `main` olduğunda tetiklenir
-- `catalog-service` ve `api-gateway` için Python 3.12 kurar
-- her iki servisin `requirements.txt` bağımlılıklarını yükler
-- `compileall` ile temel Python syntax doğrulaması yapar
-- iki servis için de Docker image build adımını doğrular
-
-Bu akış şimdilik deployment yapmaz; amaç kod ve container seviyesinde erken doğrulama sağlamaktır.
-
-## Klasör Rehberi
+Ek klasor rehberi:
 
 - [`services`](services/README.md): uygulama servisleri
-- [`infra`](infra/README.md): Docker, Compose, Kubernetes ve CI/CD yapıları
+- [`infra`](infra/README.md): Docker, Compose, Kubernetes ve CI/CD yapilari
 - [`docs`](docs/README.md): mimari notlar ve ADR'ler
-- [`scripts`](scripts/README.md): geliştirme ve bootstrap scriptleri
+- [`scripts`](scripts/README.md): gelistirme ve bootstrap scriptleri
 
-## Local Compose ile Başlatma
+## Quick Start
 
-Yerel olarak ilk çalışan akış şu iki servisten oluşur:
+Yerelde en hizli calisan senaryo iki servisten olusur:
 
-- `catalog-service`
-- `api-gateway`
+- `catalog-service` on `localhost:8081`
+- `api-gateway` on `localhost:8080`
 
-Compose dosyası:
-
-- her iki servisi source üzerinden build eder
-- port eşlemesi kurar: `8080:8080` ve `8081:8081`
-- ortak network üstünde servis keşfi sağlar
-- gateway içinde `CATALOG_SERVICE_URL=http://catalog-service:8081` ayarını kullanır
-
-Başlatma:
+Calistir:
 
 ```bash
 docker compose -f infra/compose/docker-compose.local.yml up --build
 ```
 
-Arka planda çalıştırma:
+Arka planda calistir:
 
 ```bash
 docker compose -f infra/compose/docker-compose.local.yml up --build -d
 ```
 
-Kontrol:
+Saglik ve ornek istek kontrolu:
 
 ```bash
 curl http://localhost:8081/health
@@ -144,6 +106,42 @@ curl http://localhost:8080/health
 curl http://localhost:8080/api/v1/catalog/products
 ```
 
-## Not
+Local compose yapisi:
 
-Bu repo bilerek tam production karmaşıklığına çıkmaz. Ama dosya organizasyonu, isimlendirme ve operasyonel kavramlar açısından profesyonel bir temel sağlar.
+- iki servisi source uzerinden build eder
+- `8080:8080` ve `8081:8081` port eslemesini kullanir
+- ortak Docker network uzerinde servis kesfi saglar
+- gateway icinde `CATALOG_SERVICE_URL=http://catalog-service:8081` ayari ile katalog servisine erisir
+
+## CI Pipeline
+
+`.github/workflows/ci.yml` altindaki GitHub Actions workflow'u sadece `main` branch'i icin calisir:
+
+- `push` ile `main` guncellendiginde tetiklenir
+- hedefi `main` olan `pull_request` olaylarinda tetiklenir
+- `catalog-service` ve `api-gateway` icin Python 3.12 kurar
+- ilgili `requirements.txt` bagimliliklarini yukler
+- `compileall` ile temel Python syntax dogrulamasi yapar
+- her iki servis icin Docker image build adimini validate eder
+
+Bu akis su an deployment yapmaz; amac kod ve container seviyesinde erken dogrulamadir.
+
+## Project Status
+
+- Monorepo iskeleti olusturuldu
+- Servis sinirlari ve klasor organizasyonu tanimlandi
+- `catalog-service` ve `api-gateway` icin local compose akisi hazir
+- Temel GitHub Actions CI pipeline'i mevcut
+- Kubernetes base ve overlay dizinleri acildi, ancak implementasyon seviyesi halen erken asamada
+
+## Next Steps
+
+- Faz 1 servislerinin ilk implementasyonlarini genisletmek
+- `frontend-web` ve `cart-service` icin calisan akisi tamamlamak
+- Kubernetes base manifestlerini repo hedefleriyle tam uyumlu hale getirmek
+- local ve staging overlay ayrimini netlestirmek
+- Ingress, ConfigMap, Secret, liveness ve readiness probe kullanimini olgunlastirmak
+
+## Notes
+
+Bu repo bilerek tam production karmasikligina cikmaz. Buna karsin dosya organizasyonu, isimlendirme, servis sinirlari ve operasyonel kavramlar acisindan guven veren bir temel sunmayi hedefler.
