@@ -30,12 +30,14 @@ Bu aşamada deployment yoktur; workflow yalnızca CI doğrulaması sağlar.
 
 ## Local Compose
 
-`infra/compose/docker-compose.local.yml` yerel geliştirme için sade bir iki servis akışı sağlar:
+`infra/compose/docker-compose.local.yml` yerel geliştirme için sade bir üç servis akışı sağlar:
 
 - `catalog-service` kendi container'ında `8081` portunda çalışır
+- `cart-service` kendi container'ında `8082` portunda çalışır
 - `api-gateway` `8080` portunda çalışır
-- iki servis aynı Docker network içindedir
+- üç servis aynı Docker network içindedir
 - `api-gateway`, `catalog-service` servisine `http://catalog-service:8081` adresiyle erişir
+- `api-gateway`, `cart-service` servisine `http://cart-service:8082` adresiyle erişir
 
 Çalıştırma:
 
@@ -59,6 +61,7 @@ Doğrulama:
 
 ```bash
 curl http://localhost:8081/health
+curl http://localhost:8082/health
 curl http://localhost:8080/health
 curl http://localhost:8080/api/v1/catalog/products
 ```

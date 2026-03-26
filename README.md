@@ -27,7 +27,7 @@ Su an repo icinde tanimli veya planlanmis servisler:
 | `postgres` | Kalici veri katmani | Mimari hedef |
 | `redis` | Cache ve kisa sureli veri | Mimari hedef |
 
-Bugun itibariyla local compose akisi `catalog-service` ve `api-gateway` uzerinden calisir. Bu ikili, repo icindeki ilk gercek servis etkilesimini ve CI dogrulamasini temsil eder.
+Bugun itibariyla local compose akisi `catalog-service`, `cart-service` ve `api-gateway` uzerinden calisir. Bu uc servis, repo icindeki ilk gercek servis etkilesimini ve local entegrasyon akisini temsil eder.
 
 ## Architecture Snapshot
 
@@ -81,9 +81,10 @@ Ek klasor rehberi:
 
 ## Quick Start
 
-Yerelde en hizli calisan senaryo iki servisten olusur:
+Yerelde en hizli calisan senaryo uc servisten olusur:
 
 - `catalog-service` on `localhost:8081`
+- `cart-service` on `localhost:8082`
 - `api-gateway` on `localhost:8080`
 
 Calistir:
@@ -102,28 +103,31 @@ Saglik ve ornek istek kontrolu:
 
 ```bash
 curl http://localhost:8081/health
+curl http://localhost:8082/health
 curl http://localhost:8080/health
 curl http://localhost:8080/api/v1/catalog/products
 ```
 
 Local compose yapisi:
 
-- iki servisi source uzerinden build eder
-- `8080:8080` ve `8081:8081` port eslemesini kullanir
+- uc servisi source uzerinden build eder
+- `8080:8080`, `8081:8081` ve `8082:8082` port eslemesini kullanir
 - ortak Docker network uzerinde servis kesfi saglar
 - gateway icinde `CATALOG_SERVICE_URL=http://catalog-service:8081` ayari ile katalog servisine erisir
+- gateway icinde `CART_SERVICE_URL=http://cart-service:8082` ayari ile cart servisine erisir
 
 ## Request Flow
 
-Bugun calisan temel akis su sekildedir: client istegi once `api-gateway`'e gelir, gateway ilgili katalog endpoint'i icin istegi `catalog-service`'e iletir ve yaniti geri doner.
+Bugun calisan temel akis su sekildedir: client istegi once `api-gateway`'e gelir, gateway ilgili endpoint'e gore istegi `catalog-service` veya `cart-service` servisine iletir ve yaniti geri doner.
 
 ```text
 Client
   -> api-gateway
        -> catalog-service
+       -> cart-service
 ```
 
-Local makinadan erisim icin `localhost:8080` ve `localhost:8081` kullanilir. Container'lar kendi aralarinda ise Docker network uzerinden `catalog-service:8081` gibi service-name ile haberlesir; `localhost` burada container'in kendi icini ifade eder.
+Local makinadan erisim icin `localhost:8080`, `localhost:8081` ve `localhost:8082` kullanilir. Container'lar kendi aralarinda ise Docker network uzerinden `catalog-service:8081` ve `cart-service:8082` gibi service-name ile haberlesir; `localhost` burada container'in kendi icini ifade eder.
 
 ## CI Pipeline
 
@@ -142,14 +146,14 @@ Bu akis su an deployment yapmaz; amac kod ve container seviyesinde erken dogrula
 
 - Monorepo iskeleti olusturuldu
 - Servis sinirlari ve klasor organizasyonu tanimlandi
-- `catalog-service` ve `api-gateway` icin local compose akisi hazir
+- `catalog-service`, `cart-service` ve `api-gateway` icin local compose akisi hazir
 - Temel GitHub Actions CI pipeline'i mevcut
 - Kubernetes base ve overlay dizinleri acildi, ancak implementasyon seviyesi halen erken asamada
 
 ## Next Steps
 
 - Faz 1 servislerinin ilk implementasyonlarini genisletmek
-- `frontend-web` ve `cart-service` icin calisan akisi tamamlamak
+- `frontend-web` icin calisan akisi tamamlamak
 - Kubernetes base manifestlerini repo hedefleriyle tam uyumlu hale getirmek
 - local ve staging overlay ayrimini netlestirmek
 - Ingress, ConfigMap, Secret, liveness ve readiness probe kullanimini olgunlastirmak
