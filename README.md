@@ -113,6 +113,18 @@ Local compose yapisi:
 - ortak Docker network uzerinde servis kesfi saglar
 - gateway icinde `CATALOG_SERVICE_URL=http://catalog-service:8081` ayari ile katalog servisine erisir
 
+## Request Flow
+
+Bugun calisan temel akis su sekildedir: client istegi once `api-gateway`'e gelir, gateway ilgili katalog endpoint'i icin istegi `catalog-service`'e iletir ve yaniti geri doner.
+
+```text
+Client
+  -> api-gateway
+       -> catalog-service
+```
+
+Local makinadan erisim icin `localhost:8080` ve `localhost:8081` kullanilir. Container'lar kendi aralarinda ise Docker network uzerinden `catalog-service:8081` gibi service-name ile haberlesir; `localhost` burada container'in kendi icini ifade eder.
+
 ## CI Pipeline
 
 `.github/workflows/ci.yml` altindaki GitHub Actions workflow'u sadece `main` branch'i icin calisir:
