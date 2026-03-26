@@ -7,8 +7,6 @@ commonLabels:
   environment: staging
 
 images:
-  - name: hb-demo/frontend-web
-    newTag: staging
   - name: hb-demo/api-gateway
     newTag: staging
   - name: hb-demo/catalog-service

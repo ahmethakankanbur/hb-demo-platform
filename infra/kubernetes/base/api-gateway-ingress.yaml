@@ -1,21 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: hb-demo-ingress
-  namespace: hb-demo
+  name: api-gateway
 spec:
   rules:
-    - host: hb-demo.local
-      http:
+    - http:
         paths:
           - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-web
-                port:
-                  number: 3000
-          - path: /api
             pathType: Prefix
             backend:
               service:

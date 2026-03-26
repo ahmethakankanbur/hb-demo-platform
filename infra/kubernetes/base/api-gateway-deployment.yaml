@@ -2,7 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
-  namespace: hb-demo
+  labels:
+    app: api-gateway
 spec:
   replicas: 1
   selector:
@@ -16,13 +17,32 @@ spec:
       containers:
         - name: api-gateway
           image: hb-demo/api-gateway:local
+          envFrom:
+            - configMapRef:
+                name: api-gateway-config
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
           readinessProbe:
             httpGet:
               path: /ready
               port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

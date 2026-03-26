@@ -2,11 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: cart-service
-  namespace: hb-demo
+  labels:
+    app: cart-service
 spec:
   selector:
     app: cart-service
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8082
       targetPort: 8082

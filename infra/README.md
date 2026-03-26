@@ -66,3 +66,14 @@ curl http://localhost:8082/health
 curl http://localhost:8080/health
 curl http://localhost:8080/api/v1/catalog/products
 ```
+
+## Kubernetes Base
+
+`infra/kubernetes/base/` altında üç çalışan servis için sade base manifestleri bulunur:
+
+- `hb-demo` namespace
+- `api-gateway`, `catalog-service`, `cart-service` için `Deployment` ve `Service`
+- gateway için upstream URL ve timeout ayarlarını taşıyan `ConfigMap`
+- trafiği `api-gateway` servisine yönlendiren basit bir `Ingress`
+
+Bu base katmanı production seviyesinde karmaşık ayarlar içermez; overlay'ler ortam bazlı farkları bunun üzerine ekler.

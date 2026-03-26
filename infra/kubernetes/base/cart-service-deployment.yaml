@@ -2,7 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cart-service
-  namespace: hb-demo
+  labels:
+    app: cart-service
 spec:
   replicas: 1
   selector:
@@ -17,12 +18,28 @@ spec:
         - name: cart-service
           image: hb-demo/cart-service:local
           ports:
-            - containerPort: 8082
+            - name: http
+              containerPort: 8082
           readinessProbe:
             httpGet:
               path: /ready
               port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
               port: 8082
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 150m
+              memory: 128Mi

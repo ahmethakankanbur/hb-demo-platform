@@ -2,7 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalog-service
-  namespace: hb-demo
+  labels:
+    app: catalog-service
 spec:
   replicas: 1
   selector:
@@ -17,12 +18,28 @@ spec:
         - name: catalog-service
           image: hb-demo/catalog-service:local
           ports:
-            - containerPort: 8081
+            - name: http
+              containerPort: 8081
           readinessProbe:
             httpGet:
               path: /ready
               port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
               port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

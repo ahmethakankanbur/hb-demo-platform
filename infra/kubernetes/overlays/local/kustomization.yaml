@@ -7,8 +7,6 @@ commonLabels:
   environment: local
 
 images:
-  - name: hb-demo/frontend-web
-    newTag: local
   - name: hb-demo/api-gateway
     newTag: local
   - name: hb-demo/catalog-service
