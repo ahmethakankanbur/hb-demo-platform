@@ -19,10 +19,13 @@ jobs:
         include:
           - service_name: catalog-service
             service_path: services/catalog-service
+            run_pytest: true
           - service_name: api-gateway
             service_path: services/api-gateway
+            run_pytest: false
           - service_name: cart-service
             service_path: services/cart-service
+            run_pytest: true
 
     steps:
       - name: Check Out Repository
@@ -45,6 +48,14 @@ jobs:
         working-directory: ${{ matrix.service_path }}
         run: |
           python -m compileall -q app wsgi.py
+
+      - name: Run Pytest Suite
+        if: ${{ matrix.run_pytest }}
+        working-directory: ${{ matrix.service_path }}
+        env:
+          PYTHONPATH: .
+        run: |
+          pytest
 
   build-service-images:
     name: Build Service Images

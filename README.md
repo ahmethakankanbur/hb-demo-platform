@@ -138,6 +138,7 @@ Local makinadan erisim icin `localhost:8080`, `localhost:8081` ve `localhost:808
 - `catalog-service`, `api-gateway` ve `cart-service` icin Python 3.12 kurar
 - ilgili `requirements.txt` bagimliliklarini yukler
 - `compileall` ile temel Python syntax dogrulamasi yapar
+- `catalog-service` ve `cart-service` icin `PYTHONPATH=.` ile `pytest` calistirir
 - uc servis icin Docker image build adimini validate eder
 
 Bu akis su an deployment yapmaz; amac kod ve container seviyesinde erken dogrulamadir.

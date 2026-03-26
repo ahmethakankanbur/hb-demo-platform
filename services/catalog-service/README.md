@@ -35,6 +35,12 @@ Bağımlılıkları yükle:
 pip install -r requirements.txt
 ```
 
+Testleri çalıştır:
+
+```bash
+pytest
+```
+
 Servisi `gunicorn` ile başlat:
 
 ```bash

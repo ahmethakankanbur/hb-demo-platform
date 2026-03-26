@@ -24,6 +24,7 @@ Repository içindeki GitHub Actions workflow'u `.github/workflows/ci.yml` dosyas
 - sadece `main` için `push` ve `pull_request` eventlerinde çalışır
 - `catalog-service`, `api-gateway` ve `cart-service` bağımlılıklarını kurar
 - Python syntax doğrulaması yapar
+- `catalog-service` ve `cart-service` için `PYTHONPATH=.` ile `pytest` çalıştırır
 - üç servisin Docker image build adımını kontrol eder
 
 Bu aşamada deployment yoktur; workflow yalnızca CI doğrulaması sağlar.
