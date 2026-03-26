@@ -135,10 +135,10 @@ Local makinadan erisim icin `localhost:8080`, `localhost:8081` ve `localhost:808
 
 - `push` ile `main` guncellendiginde tetiklenir
 - hedefi `main` olan `pull_request` olaylarinda tetiklenir
-- `catalog-service` ve `api-gateway` icin Python 3.12 kurar
+- `catalog-service`, `api-gateway` ve `cart-service` icin Python 3.12 kurar
 - ilgili `requirements.txt` bagimliliklarini yukler
 - `compileall` ile temel Python syntax dogrulamasi yapar
-- her iki servis icin Docker image build adimini validate eder
+- uc servis icin Docker image build adimini validate eder
 
 Bu akis su an deployment yapmaz; amac kod ve container seviyesinde erken dogrulamadir.
 

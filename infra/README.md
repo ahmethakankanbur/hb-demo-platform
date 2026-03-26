@@ -22,9 +22,9 @@ Bu klasör operasyonel katmanı taşır.
 Repository içindeki GitHub Actions workflow'u `.github/workflows/ci.yml` dosyasında yer alır. Bu pipeline:
 
 - sadece `main` için `push` ve `pull_request` eventlerinde çalışır
-- `catalog-service` ve `api-gateway` bağımlılıklarını kurar
+- `catalog-service`, `api-gateway` ve `cart-service` bağımlılıklarını kurar
 - Python syntax doğrulaması yapar
-- her iki servisin Docker image build adımını kontrol eder
+- üç servisin Docker image build adımını kontrol eder
 
 Bu aşamada deployment yoktur; workflow yalnızca CI doğrulaması sağlar.
 

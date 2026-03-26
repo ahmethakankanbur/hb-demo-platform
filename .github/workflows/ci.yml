@@ -21,6 +21,8 @@ jobs:
             service_path: services/catalog-service
           - service_name: api-gateway
             service_path: services/api-gateway
+          - service_name: cart-service
+            service_path: services/cart-service
 
     steps:
       - name: Check Out Repository
@@ -58,6 +60,9 @@ jobs:
           - service_name: api-gateway
             service_path: services/api-gateway
             image_name: hb-demo/api-gateway
+          - service_name: cart-service
+            service_path: services/cart-service
+            image_name: hb-demo/cart-service
 
     steps:
       - name: Check Out Repository
