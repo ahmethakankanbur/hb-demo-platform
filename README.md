@@ -85,17 +85,30 @@ Gerekçe: Bu altı bileşenle gerçek bir alışveriş akışı gösterilebilir.
 - [x] Mimari sınırların tanımlanması
 - [ ] Faz 1 servislerinin ilk implementasyonu
 - [x] Dockerfile ve `docker-compose.local.yml`
-- [ ] Basit CI pipeline
+- [x] Basit CI pipeline
 - [ ] Kubernetes base manifestleri
 - [ ] Overlay mantığı ile local/staging ayrımı
 - [ ] Ingress, ConfigMap, Secret ve probe kullanımı
 
+## CI Pipeline
+
+`.github/workflows/ci.yml` içindeki GitHub Actions workflow'u sadece `main` branch'i için çalışır:
+
+- `push` ile `main` güncellendiğinde tetiklenir
+- `pull_request` ile hedef branch `main` olduğunda tetiklenir
+- `catalog-service` ve `api-gateway` için Python 3.12 kurar
+- her iki servisin `requirements.txt` bağımlılıklarını yükler
+- `compileall` ile temel Python syntax doğrulaması yapar
+- iki servis için de Docker image build adımını doğrular
+
+Bu akış şimdilik deployment yapmaz; amaç kod ve container seviyesinde erken doğrulama sağlamaktır.
+
 ## Klasör Rehberi
 
-- [`services`](/home/ahmet/code/hb-demo-platform/services/README.md): uygulama servisleri
-- [`infra`](/home/ahmet/code/hb-demo-platform/infra/README.md): Docker, Compose, Kubernetes ve CI/CD yapıları
-- [`docs`](/home/ahmet/code/hb-demo-platform/docs/README.md): mimari notlar ve ADR'ler
-- [`scripts`](/home/ahmet/code/hb-demo-platform/scripts/README.md): geliştirme ve bootstrap scriptleri
+- [`services`](services/README.md): uygulama servisleri
+- [`infra`](infra/README.md): Docker, Compose, Kubernetes ve CI/CD yapıları
+- [`docs`](docs/README.md): mimari notlar ve ADR'ler
+- [`scripts`](scripts/README.md): geliştirme ve bootstrap scriptleri
 
 ## Local Compose ile Başlatma
 

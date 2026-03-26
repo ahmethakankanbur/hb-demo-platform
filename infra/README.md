@@ -17,6 +17,17 @@ Bu klasör operasyonel katmanı taşır.
 - health probe mantığı
 - deployment ve rollout davranışı
 
+## CI
+
+Repository içindeki GitHub Actions workflow'u `.github/workflows/ci.yml` dosyasında yer alır. Bu pipeline:
+
+- sadece `main` için `push` ve `pull_request` eventlerinde çalışır
+- `catalog-service` ve `api-gateway` bağımlılıklarını kurar
+- Python syntax doğrulaması yapar
+- her iki servisin Docker image build adımını kontrol eder
+
+Bu aşamada deployment yoktur; workflow yalnızca CI doğrulaması sağlar.
+
 ## Local Compose
 
 `infra/compose/docker-compose.local.yml` yerel geliştirme için sade bir iki servis akışı sağlar:
